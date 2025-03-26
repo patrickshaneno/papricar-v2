@@ -1,7 +1,7 @@
--- Drop existing policies if they exist
-DROP POLICY IF EXISTS "Public profiles are viewable by everyone" ON public.profiles;
-DROP POLICY IF EXISTS "Users can insert their own profile" ON public.profiles;
-DROP POLICY IF EXISTS "Users can update own profile" ON public.profiles;
+-- Zuerst alles aufräumen
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+DROP FUNCTION IF EXISTS public.handle_new_user();
+DROP TABLE IF EXISTS public.profiles CASCADE;
 
 -- Create profiles table
 CREATE TABLE IF NOT EXISTS public.profiles (
