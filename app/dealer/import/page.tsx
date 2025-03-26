@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 import { Upload, AlertCircle, CheckCircle } from 'lucide-react'
 
 interface CSVRow {
@@ -39,7 +39,10 @@ interface ImportSummary {
 
 export default function VehicleImport() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
   const [isDragging, setIsDragging] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
   const [csvData, setCsvData] = useState<CSVRow[]>([])
@@ -47,6 +50,7 @@ export default function VehicleImport() {
   const [showPreview, setShowPreview] = useState(false)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [importSummary, setImportSummary] = useState<ImportSummary | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const validateRow = (row: CSVRow, index: number): ValidationError[] => {
     const errors: ValidationError[] = []

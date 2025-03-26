@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 import { Users, Building2, Car, Mail } from 'lucide-react'
 import UsersTable from '@/app/components/admin/UsersTable'
 import DealersTable from '@/app/components/admin/DealersTable'
@@ -59,7 +59,10 @@ interface Lead {
 
 export default function AdminDashboard() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('dashboard')
   const [kpis, setKpis] = useState<KPI[]>([])

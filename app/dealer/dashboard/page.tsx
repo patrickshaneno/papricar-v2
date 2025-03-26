@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createBrowserClient } from '@supabase/ssr'
 import { useRouter } from 'next/navigation'
 import { Vehicle, VehicleStatus } from '@/types/vehicle'
 import { Car, Download, Star, MessageSquare, CheckCircle, Percent } from 'lucide-react'
@@ -25,7 +25,10 @@ interface Inquiry {
 
 export default function DealerDashboard() {
   const router = useRouter()
-  const supabase = createClientComponentClient()
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [vehicles, setVehicles] = useState<Vehicle[]>([])
   const [inquiries, setInquiries] = useState<Inquiry[]>([])
