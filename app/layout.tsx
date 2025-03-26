@@ -5,8 +5,8 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'PAPRICAR - Ihre Plattform für professionelle Fahrzeugvermittlung',
-  description: 'PAPRICAR – Der Marktplatz für Neuwagen & geprüfte Gebrauchte mit voller Transparenz & direkter Händleranfrage.',
+  title: 'PAPRICAR',
+  description: 'Neuwagen & Gebrauchtwagen – fair. transparent. digital.',
   manifest: '/manifest.json',
   themeColor: '#8B5CF6',
   robots: {
@@ -57,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="de">
+    <html lang="de" className={inter.className}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -65,7 +65,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="PAPRICAR" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className="bg-white text-gray-900 antialiased">{children}</body>
     </html>
   )
 } 
