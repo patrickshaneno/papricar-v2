@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
 import { Database } from '@/types/supabase'
 import { useState, useEffect } from 'react'
 
@@ -17,48 +17,30 @@ export interface DealerProfile extends UserProfile {
   contact_person: string
 }
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey)
+const supabase = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 export async function signUp(
   email: string,
   password: string,
   profile: Partial<UserProfile>
 ) {
-  const { data: authData, error: authError } = await supabase.auth.signUp({
+  const { data, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       data: {
-        role: profile.role,
+        role: profile.role || 'user',
+        name: profile.name,
+        phone: profile.phone,
       },
     },
   })
 
-  if (authError) throw authError
-  if (!authData.user) throw new Error('No user data returned')
-
-  // Erstelle Profil in der profiles Tabelle
-  const { error: profileError } = await supabase
-    .from('profiles')
-    .insert([
-      {
-        user_id: authData.user.id,
-        name: profile.name,
-        role: profile.role,
-        phone: profile.phone,
-        ...(profile.role === 'dealer' && {
-          company_name: (profile as DealerProfile).company_name,
-          contact_person: (profile as DealerProfile).contact_person,
-        }),
-      },
-    ])
-
-  if (profileError) throw profileError
-
-  return authData
+  if (error) throw error
+  return data
 }
 
 export async function signIn(email: string, password: string) {
@@ -78,13 +60,14 @@ export async function signOut() {
 
 export async function getCurrentUser() {
   const { data: { user }, error } = await supabase.auth.getUser()
+
   if (error) throw error
   if (!user) return null
 
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
     .select('*')
-    .eq('user_id', user.id)
+    .eq('id', user.id)
     .single()
 
   if (profileError) throw profileError
@@ -108,20 +91,8 @@ export function useAuth() {
   useEffect(() => {
     getCurrentUser()
       .then(setUser)
+      .catch(console.error)
       .finally(() => setLoading(false))
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        if (session?.user) {
-          const user = await getCurrentUser()
-          setUser(user)
-        } else {
-          setUser(null)
-        }
-      }
-    )
-
-    return () => subscription.unsubscribe()
   }, [])
 
   return { user, loading }
