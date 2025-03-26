@@ -1,44 +1,41 @@
 'use client'
 
 import { useState } from 'react'
+import { PaperAirplaneIcon } from '@heroicons/react/24/solid'
 
 interface ChatInputProps {
-  onSend: (message: string) => void;
-  disabled?: boolean;
-  isDealer?: boolean;
-  dealerId?: string;
+  onSendMessage: (message: string) => void
+  disabled?: boolean
 }
 
-export default function ChatInput({ onSend, disabled = false, isDealer = false, dealerId }: ChatInputProps) {
+export default function ChatInput({ onSendMessage, disabled = false }: ChatInputProps) {
   const [message, setMessage] = useState('')
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    if (message.trim()) {
-      onSend(message)
+    if (message.trim() && !disabled) {
+      onSendMessage(message.trim())
       setMessage('')
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 bg-white border-t">
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Nachricht eingeben..."
-          className="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-          disabled={disabled}
-        />
-        <button
-          type="submit"
-          disabled={!message.trim() || disabled}
-          className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Senden
-        </button>
-      </div>
+    <form onSubmit={handleSubmit} className="flex items-center gap-2 p-4 bg-white border-t border-gray-200">
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        placeholder="Nachricht eingeben..."
+        className="input-field"
+        disabled={disabled}
+      />
+      <button
+        type="submit"
+        disabled={!message.trim() || disabled}
+        className="p-2 text-white bg-blue-600 rounded-xl hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+      >
+        <PaperAirplaneIcon className="w-5 h-5" />
+      </button>
     </form>
   )
 } 
