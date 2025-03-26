@@ -9,6 +9,7 @@ interface ManagementSectionProps {
   errors: FieldErrors<VehicleFormData>
   control: Control<VehicleFormData>
   isLoading?: boolean
+  isDirty: boolean
   onDuplicate: () => void
   onMarkAsSold: () => void
 }
@@ -19,7 +20,7 @@ const VEHICLE_STATUSES = [
   { value: 'sold', label: 'Verkauft' }
 ] as const
 
-export default function ManagementSection({ register, errors, control, isLoading, onDuplicate, onMarkAsSold }: ManagementSectionProps) {
+export default function ManagementSection({ register, errors, control, isLoading, isDirty, onDuplicate, onMarkAsSold }: ManagementSectionProps) {
   return (
     <div className="space-y-6">
       <div>
