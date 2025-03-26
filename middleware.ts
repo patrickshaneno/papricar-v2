@@ -1,4 +1,4 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr'
+import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -22,39 +22,12 @@ const publicRoutes = [
 ]
 
 export async function middleware(req: NextRequest) {
-  let response = NextResponse.next({
-    request: {
-      headers: req.headers,
-    },
-  })
+  const res = NextResponse.next()
+  const supabase = createMiddlewareClient({ req, res })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        get(name: string) {
-          return req.cookies.get(name)?.value
-        },
-        set(name: string, value: string, options: CookieOptions) {
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          })
-        },
-        remove(name: string, options: CookieOptions) {
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          })
-        },
-      },
-    }
-  )
-
-  const { data: { session } } = await supabase.auth.getSession()
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
 
   // Prüfe, ob die aktuelle Route geschützt ist
   const isProtectedRoute = protectedRoutes.some(route => 
@@ -73,57 +46,48 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(redirectUrl)
   }
 
-  // Wenn Session und Login/Register-Seite, zum Dashboard weiterleiten
-  if (session && (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/register')) {
-    return NextResponse.redirect(new URL('/dealer/dashboard', req.url))
-  }
-
-  // Wenn Admin-Route, prüfe ob User Admin ist
-  if (req.nextUrl.pathname.startsWith('/admin')) {
-    if (!session) {
-      return NextResponse.redirect(new URL('/login', req.url))
-    }
-
-    const { data: user } = await supabase
-      .from('users')
+  // Wenn Session vorhanden ist
+  if (session) {
+    // Hole die Benutzerrolle aus der profiles-Tabelle
+    const { data: profile } = await supabase
+      .from('profiles')
       .select('role')
       .eq('id', session.user.id)
       .single()
 
-    if (user?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/', req.url))
+    const role = profile?.role || 'user'
+
+    // Weiterleitung basierend auf der Rolle
+    if (req.nextUrl.pathname === '/login') {
+      return NextResponse.redirect(new URL(role === 'dealer' ? '/dealer' : '/vehicles', req.url))
+    }
+
+    // Schutz der Dealer-Route
+    if (req.nextUrl.pathname.startsWith('/dealer') && role !== 'dealer') {
+      return NextResponse.redirect(new URL('/vehicles', req.url))
+    }
+
+    // Schutz der User-Route
+    if (req.nextUrl.pathname.startsWith('/vehicles') && role === 'dealer') {
+      return NextResponse.redirect(new URL('/dealer', req.url))
+    }
+
+    // Wenn Admin-Route, prüfe ob User Admin ist
+    if (req.nextUrl.pathname.startsWith('/admin')) {
+      if (role !== 'admin') {
+        return NextResponse.redirect(new URL('/', req.url))
+      }
     }
   }
 
-  // Wenn Dealer-Route, prüfe ob User Dealer ist
-  if (req.nextUrl.pathname.startsWith('/dealer')) {
-    if (!session) {
-      return NextResponse.redirect(new URL('/login', req.url))
-    }
-
-    const { data: user } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
-
-    if (user?.role !== 'dealer') {
-      return NextResponse.redirect(new URL('/', req.url))
-    }
-  }
-
-  return response
+  return res
 }
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - public folder
-     */
-    '/((?!_next/static|_next/image|favicon.ico|public).*)',
+    '/login',
+    '/vehicles/:path*',
+    '/dealer/:path*',
+    '/chat/:path*',
   ],
 } 

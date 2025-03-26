@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/Navbar'
+import Container from '@/components/ui/Container'
 
 const inter = Inter({
   subsets: ['latin'],
@@ -10,8 +11,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: 'PAPRICAR',
-  description: 'Neuwagen & Gebrauchtwagen – fair. transparent. digital.',
+  title: 'Papricar - Ihr Fahrzeugmarkt',
+  description: 'Finden Sie Ihr perfektes Fahrzeug auf Papricar',
   manifest: '/manifest.json',
   themeColor: '#8B5CF6',
   robots: {
@@ -71,12 +72,10 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
       <body className="min-h-screen bg-gray-50">
-        <div className="flex flex-col min-h-screen">
-          <Navbar />
-          <main className="flex-grow container-custom py-8">
-            {children}
-          </main>
-        </div>
+        <Navbar />
+        <Container>
+          {children}
+        </Container>
       </body>
     </html>
   )
