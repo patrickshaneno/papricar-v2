@@ -1,6 +1,7 @@
 'use client'
 
 import { CheckIcon } from '@heroicons/react/24/solid'
+import Container from '@/components/ui/Container'
 
 const features = [
   {
@@ -32,7 +33,7 @@ const features = [
 export default function Features() {
   return (
     <div className="bg-white py-24 sm:py-32">
-      <div className="container-custom">
+      <Container>
         <div className="mx-auto max-w-2xl lg:text-center">
           <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
             Schneller verkaufen
@@ -59,7 +60,7 @@ export default function Features() {
             ))}
           </dl>
         </div>
-      </div>
+      </Container>
     </div>
   )
 } 

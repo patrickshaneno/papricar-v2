@@ -1,5 +1,7 @@
 'use client'
 
+import Container from '@/components/ui/Container'
+
 const steps = [
   {
     name: 'Registrieren',
@@ -22,7 +24,7 @@ const steps = [
 export default function HowItWorks() {
   return (
     <div className="bg-gradient-to-b from-white to-gray-50 py-24 sm:py-32">
-      <div className="container-custom">
+      <Container>
         <div className="mx-auto max-w-2xl lg:text-center">
           <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
             Einfacher Prozess
@@ -49,7 +51,7 @@ export default function HowItWorks() {
             ))}
           </dl>
         </div>
-      </div>
+      </Container>
     </div>
   )
 } 

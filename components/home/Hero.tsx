@@ -2,12 +2,13 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
+import Container from '@/components/ui/Container'
 
 export default function Hero() {
   return (
     <div className="relative isolate overflow-hidden bg-gradient-to-b from-blue-50 to-white">
-      <div className="container-custom py-16 sm:py-24 lg:flex lg:items-center lg:py-32">
-        <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-8">
+      <Container className="py-16 sm:py-24 lg:flex lg:items-center lg:py-32">
+        <div className="mx-auto max-w-2xl lg:mx-0 lg:max-w-xl">
           <div className="mt-24 sm:mt-32 lg:mt-16">
             <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
               Neu bei PAPRICAR
@@ -46,7 +47,7 @@ export default function Hero() {
             />
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   )
 } 

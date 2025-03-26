@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
+import Container from '@/components/ui/Container'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -20,7 +21,7 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-md">
-      <div className="container-custom">
+      <Container>
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center">
@@ -117,7 +118,7 @@ export default function Navbar() {
             </div>
           </div>
         )}
-      </div>
+      </Container>
     </nav>
   )
 } 
