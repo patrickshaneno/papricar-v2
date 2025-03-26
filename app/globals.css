@@ -3,8 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    @apply antialiased;
+  }
+  
   body {
-    @apply bg-white text-gray-900 font-sans antialiased min-h-screen;
+    @apply bg-white text-gray-900 min-h-screen;
   }
 }
 
