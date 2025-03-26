@@ -59,4 +59,14 @@ export interface VehicleFormData extends Omit<Vehicle, 'id' | 'created_at' | 'up
   negotiable: boolean;
   fuel_consumption: number;
   emission_class: string;
+  co2_class: EmissionClass;
+  co2_class_battery_empty?: EmissionClass;
+  fuel_consumption_combined?: number;
+  electric_consumption_combined?: number;
+  fuel_consumption_battery_empty?: number;
+  electric_consumption_battery_empty?: number;
+  leasing_rate?: number;
+  cash_discount?: number;
+  financing_discount?: number;
+  leasing_discount?: number;
 } 
