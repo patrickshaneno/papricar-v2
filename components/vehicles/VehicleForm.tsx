@@ -66,7 +66,6 @@ const schema = z.object({
 
 export default function VehicleForm({ initialData, onSubmit, isLoading }: VehicleFormProps) {
   const [selectedTab, setSelectedTab] = useState(0)
-  const [isDirty, setIsDirty] = useState(false)
 
   const {
     register,
@@ -100,6 +99,14 @@ export default function VehicleForm({ initialData, onSubmit, isLoading }: Vehicl
     } catch (error) {
       console.error('Error submitting form:', error)
     }
+  }
+
+  const handleDuplicate = () => {
+    // Implementierung der Duplizierungslogik
+  }
+
+  const handleMarkAsSold = () => {
+    // Implementierung der "Als verkauft markieren" Logik
   }
 
   const tabClassNames = {
@@ -170,8 +177,8 @@ export default function VehicleForm({ initialData, onSubmit, isLoading }: Vehicl
               control={control}
               isDirty={formIsDirty}
               isLoading={isLoading}
-              onDuplicate={() => {}}
-              onMarkAsSold={() => {}}
+              onDuplicate={handleDuplicate}
+              onMarkAsSold={handleMarkAsSold}
             />
           </Tab.Panel>
         </Tab.Panels>
