@@ -2,8 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-  @apply bg-white text-gray-900 font-sans;
+@layer base {
+  body {
+    @apply bg-white text-gray-900 font-sans antialiased min-h-screen;
+  }
 }
 
 :root {
