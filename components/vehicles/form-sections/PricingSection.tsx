@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import { Control, UseFormRegister, FieldErrors } from 'react-hook-form'
 import { VehicleFormData, VehicleType } from '@/types/vehicle'
 
@@ -8,13 +9,17 @@ interface PricingSectionProps {
   errors: FieldErrors<VehicleFormData>
   control: Control<VehicleFormData>
   vehicleType: VehicleType
+  formData: VehicleFormData
+  onChange: (field: keyof VehicleFormData, value: any) => void
 }
 
 export default function PricingSection({
   register,
   errors,
   control,
-  vehicleType
+  vehicleType,
+  formData,
+  onChange
 }: PricingSectionProps) {
   const isNewVehicle = vehicleType === 'new'
 
@@ -46,6 +51,8 @@ export default function PricingSection({
                   })}
                   className="block w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
                   aria-describedby="price-tooltip"
+                  value={formData.price}
+                  onChange={(e) => onChange('price', parseInt(e.target.value))}
                 />
               </div>
               <div
@@ -88,6 +95,8 @@ export default function PricingSection({
                     min: { value: 0, message: 'Rate muss positiv sein' }
                   })}
                   className="block w-full pl-7 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
+                  value={formData.leasing_rate}
+                  onChange={(e) => onChange('leasing_rate', parseInt(e.target.value))}
                 />
               </div>
             </div>
@@ -125,6 +134,8 @@ export default function PricingSection({
                   })}
                   className="block w-full pr-7 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
                   aria-describedby="cash-discount-tooltip"
+                  value={formData.cash_discount}
+                  onChange={(e) => onChange('cash_discount', parseInt(e.target.value))}
                 />
               </div>
               <div
@@ -160,6 +171,8 @@ export default function PricingSection({
                   })}
                   className="block w-full pr-7 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
                   aria-describedby="financing-discount-tooltip"
+                  value={formData.financing_discount}
+                  onChange={(e) => onChange('financing_discount', parseInt(e.target.value))}
                 />
               </div>
               <div
@@ -195,6 +208,8 @@ export default function PricingSection({
                   })}
                   className="block w-full pr-7 rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
                   aria-describedby="leasing-discount-tooltip"
+                  value={formData.leasing_discount}
+                  onChange={(e) => onChange('leasing_discount', parseInt(e.target.value))}
                 />
               </div>
               <div
