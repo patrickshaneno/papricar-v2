@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { UseFormRegister, FieldErrors, Control, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 import { VehicleFormData } from '@/types/vehicle'
 
@@ -12,20 +12,45 @@ interface ImagesSectionProps {
   watch: UseFormWatch<VehicleFormData>
 }
 
+const MAX_FILE_SIZE = 10 * 1024 * 1024 // 10MB
+const ACCEPTED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/gif']
+
 export default function ImagesSection({ register, errors, control, setValue, watch }: ImagesSectionProps) {
   const images = watch('images')
+  const [objectUrls, setObjectUrls] = React.useState<string[]>([])
+
+  useEffect(() => {
+    return () => {
+      // Cleanup object URLs when component unmounts
+      objectUrls.forEach(url => URL.revokeObjectURL(url))
+    }
+  }, [objectUrls])
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
-    if (files) {
-      const newImages = Array.from(files).map(file => URL.createObjectURL(file))
-      setValue('images', [...images, ...newImages])
-    }
+    if (!files) return
+
+    const validFiles = Array.from(files).filter(file => {
+      if (file.size > MAX_FILE_SIZE) {
+        alert(`Die Datei ${file.name} ist zu groß. Maximale Größe: 10MB`)
+        return false
+      }
+      if (!ACCEPTED_FILE_TYPES.includes(file.type)) {
+        alert(`Die Datei ${file.name} hat ein nicht unterstütztes Format. Erlaubte Formate: JPG, PNG, GIF`)
+        return false
+      }
+      return true
+    })
+
+    const newUrls = validFiles.map(file => URL.createObjectURL(file))
+    setObjectUrls(prev => [...prev, ...newUrls])
+    setValue('images', [...images, ...newUrls])
   }
 
   const handleRemoveImage = (index: number) => {
-    const newImages = images.filter((_, i) => i !== index)
-    setValue('images', newImages)
+    URL.revokeObjectURL(objectUrls[index])
+    setObjectUrls(prev => prev.filter((_, i) => i !== index))
+    setValue('images', images.filter((_, i) => i !== index))
   }
 
   return (
@@ -61,7 +86,7 @@ export default function ImagesSection({ register, errors, control, setValue, wat
                   name="file-upload"
                   type="file"
                   className="sr-only"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/gif"
                   multiple
                   onChange={handleImageUpload}
                 />
