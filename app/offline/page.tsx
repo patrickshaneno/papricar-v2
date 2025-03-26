@@ -1,4 +1,12 @@
+'use client'
+
+import React from 'react'
+
 export default function OfflinePage() {
+  const handleReload = React.useCallback(() => {
+    window.location.reload()
+  }, [])
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
       <div className="max-w-md w-full bg-white rounded-lg shadow-lg p-8 text-center">
@@ -27,7 +35,7 @@ export default function OfflinePage() {
         </p>
 
         <button
-          onClick={() => window.location.reload()}
+          onClick={handleReload}
           className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
         >
           Seite neu laden
