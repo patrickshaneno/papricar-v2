@@ -1,14 +1,17 @@
 'use client'
 
 import React from 'react';
+import { UseFormRegister, FieldErrors, Control } from 'react-hook-form';
 import { VehicleFormData } from '@/types/vehicle';
 
 interface ConsumptionSectionProps {
-  formData: VehicleFormData;
-  onChange: (field: keyof VehicleFormData, value: any) => void;
+  register: UseFormRegister<VehicleFormData>;
+  errors: FieldErrors<VehicleFormData>;
+  control: Control<VehicleFormData>;
+  fuelType: string;
 }
 
-export default function ConsumptionSection({ formData, onChange }: ConsumptionSectionProps) {
+export default function ConsumptionSection({ register, errors, control, fuelType }: ConsumptionSectionProps) {
   return (
     <div className="space-y-6">
       <div>
@@ -18,10 +21,12 @@ export default function ConsumptionSection({ formData, onChange }: ConsumptionSe
         <input
           type="number"
           id="fuelConsumption"
-          value={formData.fuel_consumption}
-          onChange={(e) => onChange('fuel_consumption', parseFloat(e.target.value))}
+          {...register('fuel_consumption')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         />
+        {errors.fuel_consumption && (
+          <p className="mt-1 text-sm text-red-600">{errors.fuel_consumption.message}</p>
+        )}
       </div>
 
       <div>
@@ -31,10 +36,12 @@ export default function ConsumptionSection({ formData, onChange }: ConsumptionSe
         <input
           type="number"
           id="co2Emissions"
-          value={formData.co2_emissions}
-          onChange={(e) => onChange('co2_emissions', parseInt(e.target.value))}
+          {...register('co2_emissions')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         />
+        {errors.co2_emissions && (
+          <p className="mt-1 text-sm text-red-600">{errors.co2_emissions.message}</p>
+        )}
       </div>
 
       <div>
@@ -43,8 +50,7 @@ export default function ConsumptionSection({ formData, onChange }: ConsumptionSe
         </label>
         <select
           id="emissionClass"
-          value={formData.emission_class}
-          onChange={(e) => onChange('emission_class', e.target.value)}
+          {...register('emission_class')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         >
           <option value="euro6">Euro 6</option>
@@ -54,6 +60,9 @@ export default function ConsumptionSection({ formData, onChange }: ConsumptionSe
           <option value="euro2">Euro 2</option>
           <option value="euro1">Euro 1</option>
         </select>
+        {errors.emission_class && (
+          <p className="mt-1 text-sm text-red-600">{errors.emission_class.message}</p>
+        )}
       </div>
     </div>
   );

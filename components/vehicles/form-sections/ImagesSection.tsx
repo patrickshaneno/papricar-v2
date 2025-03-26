@@ -1,25 +1,31 @@
 'use client'
 
 import React from 'react'
+import { UseFormRegister, FieldErrors, Control, UseFormSetValue, UseFormWatch } from 'react-hook-form'
 import { VehicleFormData } from '@/types/vehicle'
 
 interface ImagesSectionProps {
-  formData: VehicleFormData
-  onChange: (field: keyof VehicleFormData, value: any) => void
+  register: UseFormRegister<VehicleFormData>
+  errors: FieldErrors<VehicleFormData>
+  control: Control<VehicleFormData>
+  setValue: UseFormSetValue<VehicleFormData>
+  watch: UseFormWatch<VehicleFormData>
 }
 
-export default function ImagesSection({ formData, onChange }: ImagesSectionProps) {
+export default function ImagesSection({ register, errors, control, setValue, watch }: ImagesSectionProps) {
+  const images = watch('images')
+
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files) {
       const newImages = Array.from(files).map(file => URL.createObjectURL(file))
-      onChange('images', [...formData.images, ...newImages])
+      setValue('images', [...images, ...newImages])
     }
   }
 
   const handleRemoveImage = (index: number) => {
-    const newImages = formData.images.filter((_, i) => i !== index)
-    onChange('images', newImages)
+    const newImages = images.filter((_, i) => i !== index)
+    setValue('images', newImages)
   }
 
   return (
@@ -69,9 +75,9 @@ export default function ImagesSection({ formData, onChange }: ImagesSectionProps
         </div>
       </div>
 
-      {formData.images.length > 0 && (
+      {images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {formData.images.map((image, index) => (
+          {images.map((image, index) => (
             <div key={index} className="relative group">
               <img
                 src={image}

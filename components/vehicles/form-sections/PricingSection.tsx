@@ -1,14 +1,17 @@
 'use client'
 
 import React from 'react'
+import { UseFormRegister, FieldErrors, Control } from 'react-hook-form'
 import { VehicleFormData } from '@/types/vehicle'
 
 interface PricingSectionProps {
-  formData: VehicleFormData
-  onChange: (field: keyof VehicleFormData, value: any) => void
+  register: UseFormRegister<VehicleFormData>
+  errors: FieldErrors<VehicleFormData>
+  control: Control<VehicleFormData>
+  vehicleType: string
 }
 
-export default function PricingSection({ formData, onChange }: PricingSectionProps) {
+export default function PricingSection({ register, errors, control, vehicleType }: PricingSectionProps) {
   return (
     <div className="space-y-6">
       <div>
@@ -18,10 +21,12 @@ export default function PricingSection({ formData, onChange }: PricingSectionPro
         <input
           type="number"
           id="price"
-          value={formData.price}
-          onChange={(e) => onChange('price', parseInt(e.target.value))}
+          {...register('price')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         />
+        {errors.price && (
+          <p className="mt-1 text-sm text-red-600">{errors.price.message}</p>
+        )}
       </div>
 
       <div>
@@ -31,18 +36,19 @@ export default function PricingSection({ formData, onChange }: PricingSectionPro
         <input
           type="number"
           id="vat"
-          value={formData.vat}
-          onChange={(e) => onChange('vat', parseInt(e.target.value))}
+          {...register('vat')}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         />
+        {errors.vat && (
+          <p className="mt-1 text-sm text-red-600">{errors.vat.message}</p>
+        )}
       </div>
 
       <div className="flex items-center">
         <input
           type="checkbox"
           id="negotiable"
-          checked={formData.negotiable}
-          onChange={(e) => onChange('negotiable', e.target.checked)}
+          {...register('negotiable')}
           className="h-4 w-4 rounded border-gray-300 text-purple-600 focus:ring-purple-500"
         />
         <label htmlFor="negotiable" className="ml-2 block text-sm text-gray-700">
