@@ -144,12 +144,6 @@ export default function Navbar() {
               </Link>
               {user ? (
                 <>
-                  <Link
-                    href="/admin/dashboard"
-                    className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl transition-colors duration-200 font-medium"
-                  >
-                    Admin Dashboard
-                  </Link>
                   <button
                     onClick={async () => {
                       await supabase.auth.signOut()

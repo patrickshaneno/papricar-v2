@@ -45,19 +45,6 @@ export default function ProfileMenu({ user }: ProfileMenuProps) {
             <Menu.Item>
               {({ active }) => (
                 <button
-                  onClick={() => router.push('/admin/dashboard')}
-                  className={`${
-                    active ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
-                  } group flex w-full items-center px-4 py-2 text-sm`}
-                >
-                  Admin Dashboard
-                </button>
-              )}
-            </Menu.Item>
-
-            <Menu.Item>
-              {({ active }) => (
-                <button
                   onClick={handleSignOut}
                   className={`${
                     active ? 'bg-red-50 text-red-600' : 'text-gray-700'

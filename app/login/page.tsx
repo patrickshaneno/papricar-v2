@@ -66,8 +66,8 @@ export default function LoginPage() {
       }
 
       // Leite basierend auf der Rolle weiter
-      if (profile.role === 'dealer') {
-        router.push('/admin/dashboard')
+      if (profile?.role === 'dealer') {
+        router.push('/dealer/dashboard')
       } else {
         router.push('/vehicles')
       }

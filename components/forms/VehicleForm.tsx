@@ -1,14 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/Textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
-import { Button } from '@/components/ui/Button';
-import { DatePicker } from '@/components/ui/DatePicker';
-import { ImageUpload } from '@/components/ui/ImageUpload';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 export function VehicleForm() {
   const [formData, setFormData] = useState({
@@ -181,9 +179,11 @@ export function VehicleForm() {
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="validUntil">Gültig bis</label>
-                  <DatePicker
-                    date={formData.validUntil}
-                    onChange={(date: Date | undefined) => setFormData({ ...formData, validUntil: date || new Date() })}
+                  <Input
+                    id="validUntil"
+                    type="date"
+                    value={formData.validUntil.toISOString().split('T')[0]}
+                    onChange={(e) => setFormData({ ...formData, validUntil: new Date(e.target.value) })}
                   />
                 </div>
               </div>
