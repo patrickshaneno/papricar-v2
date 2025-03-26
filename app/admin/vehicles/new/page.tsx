@@ -1,39 +1,12 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
-import { cookies } from 'next/headers'
-import { redirect } from 'next/navigation'
-import VehicleForm from '@/components/admin/VehicleForm'
+'use client';
 
-export default async function NewVehiclePage() {
-  const supabase = createServerComponentClient({ cookies })
-  
-  const { data: { session } } = await supabase.auth.getSession()
-  
-  if (!session) {
-    redirect('/login')
-  }
+import { VehicleForm } from '@/components/forms/VehicleForm';
 
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', session.user.id)
-    .single()
-
-  if (profile?.role !== 'dealer') {
-    redirect('/')
-  }
-
+export default function NewVehiclePage() {
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Neues Fahrzeug</h1>
-        <p className="text-gray-600">Fügen Sie ein neues Fahrzeug zu Ihrem Bestand hinzu</p>
-      </div>
-
-      <div className="bg-white shadow rounded-xl overflow-hidden">
-        <div className="p-6">
-          <VehicleForm />
-        </div>
-      </div>
+    <div className="container mx-auto py-6">
+      <h1 className="text-2xl font-bold mb-6">Neues Fahrzeug hinzufügen</h1>
+      <VehicleForm />
     </div>
-  )
+  );
 } 
