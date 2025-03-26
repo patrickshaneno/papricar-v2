@@ -5,6 +5,7 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx}',
     './components/**/*.{js,ts,jsx,tsx}',
   ],
+  safelist: ['bg-white', 'text-black', 'text-white'],
   darkMode: 'class',
   theme: {
     extend: {
