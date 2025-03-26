@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { Card } from '@/components/ui/card';
+import { Card } from '@/components/ui/Card';
 import { Car, MessageSquare, Settings, LogOut } from 'lucide-react';
 import Link from 'next/link';
 
