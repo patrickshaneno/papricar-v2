@@ -22,6 +22,8 @@ const supabase = createBrowserClient(
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
+export { supabase }
+
 export async function signUp(
   email: string,
   password: string,
