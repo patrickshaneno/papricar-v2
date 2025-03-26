@@ -18,13 +18,28 @@ export default function LoginPage() {
     setError(null)
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error: signInError, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
-      if (error) throw error
-      router.push('/vehicles')
+      if (signInError) throw signInError
+
+      // Überprüfe die Rolle des Benutzers
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', data.user.id)
+        .single()
+
+      if (profileError) throw profileError
+
+      // Leite basierend auf der Rolle weiter
+      if (profile?.role === 'dealer') {
+        router.push('/admin/dashboard')
+      } else {
+        router.push('/vehicles')
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten')
     } finally {
@@ -75,7 +90,7 @@ export default function LoginPage() {
           </div>
 
           {error && (
-            <div className="text-red-600 text-sm text-center">{error}</div>
+            <div className="text-red-500 text-sm text-center">{error}</div>
           )}
 
           <div>
@@ -88,8 +103,9 @@ export default function LoginPage() {
             </button>
           </div>
         </form>
+
+        <TestAccounts />
       </div>
-      <TestAccounts />
     </div>
   )
 } 
