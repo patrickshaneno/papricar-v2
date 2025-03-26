@@ -1,4 +1,4 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -18,59 +18,101 @@ const publicRoutes = [
   '/register',
   '/login',
   '/impressum',
-  '/datenschutz',
-  '/agb'
+  '/datenschutz'
 ]
 
 export async function middleware(req: NextRequest) {
-  const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
+  let response = NextResponse.next({
+    request: {
+      headers: req.headers,
+    },
+  })
 
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return req.cookies.get(name)?.value
+        },
+        set(name: string, value: string, options: CookieOptions) {
+          response.cookies.set({
+            name,
+            value,
+            ...options,
+          })
+        },
+        remove(name: string, options: CookieOptions) {
+          response.cookies.set({
+            name,
+            value: '',
+            ...options,
+          })
+        },
+      },
+    }
+  )
 
-  const { pathname } = req.nextUrl
+  const { data: { session } } = await supabase.auth.getSession()
 
   // Prüfe, ob die aktuelle Route geschützt ist
-  const isProtected = protectedRoutes.some(route => pathname.startsWith(route))
-  const isPublic = publicRoutes.some(route => pathname.startsWith(route))
-  const isAuthRoute = pathname.startsWith('/login') || pathname.startsWith('/register')
+  const isProtectedRoute = protectedRoutes.some(route => 
+    req.nextUrl.pathname.startsWith(route)
+  )
 
-  // Wenn keine Session existiert und die Route geschützt ist
-  if (!session) {
-    if (isProtected) {
-      const redirectUrl = pathname.startsWith('/dealer')
-        ? '/dealer/login'
-        : '/login'
-      return NextResponse.redirect(new URL(redirectUrl, req.url))
+  // Prüfe, ob die aktuelle Route öffentlich ist
+  const isPublicRoute = publicRoutes.some(route => 
+    req.nextUrl.pathname.startsWith(route)
+  )
+
+  // Wenn keine Session und geschützte Route, zur Login-Seite weiterleiten
+  if (!session && isProtectedRoute) {
+    const redirectUrl = new URL('/login', req.url)
+    redirectUrl.searchParams.set('redirectedFrom', req.nextUrl.pathname)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  // Wenn Session und Login/Register-Seite, zum Dashboard weiterleiten
+  if (session && (req.nextUrl.pathname === '/login' || req.nextUrl.pathname === '/register')) {
+    return NextResponse.redirect(new URL('/dealer/dashboard', req.url))
+  }
+
+  // Wenn Admin-Route, prüfe ob User Admin ist
+  if (req.nextUrl.pathname.startsWith('/admin')) {
+    if (!session) {
+      return NextResponse.redirect(new URL('/login', req.url))
+    }
+
+    const { data: user } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', session.user.id)
+      .single()
+
+    if (user?.role !== 'admin') {
+      return NextResponse.redirect(new URL('/', req.url))
     }
   }
 
-  // Wenn eine Session existiert
-  if (session) {
-    // Wenn auf einer Auth-Route, zur entsprechenden Dashboard-Route weiterleiten
-    if (isAuthRoute) {
-      const redirectUrl = session.user.user_metadata.role === 'dealer'
-        ? '/dealer/dashboard'
-        : '/vehicles'
-      return NextResponse.redirect(new URL(redirectUrl, req.url))
+  // Wenn Dealer-Route, prüfe ob User Dealer ist
+  if (req.nextUrl.pathname.startsWith('/dealer')) {
+    if (!session) {
+      return NextResponse.redirect(new URL('/login', req.url))
     }
 
-    // Rollenbasierte Zugriffskontrolle für geschützte Routen
-    const isDealerRoute = pathname.startsWith('/dealer')
-    const isAdminRoute = pathname.startsWith('/admin')
+    const { data: user } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', session.user.id)
+      .single()
 
-    if (isDealerRoute && session.user.user_metadata.role !== 'dealer') {
-      return NextResponse.redirect(new URL('/vehicles', req.url))
-    }
-
-    if (isAdminRoute && session.user.user_metadata.role !== 'admin') {
-      return NextResponse.redirect(new URL('/vehicles', req.url))
+    if (user?.role !== 'dealer') {
+      return NextResponse.redirect(new URL('/', req.url))
     }
   }
 
-  return res
+  return response
 }
 
 export const config = {
