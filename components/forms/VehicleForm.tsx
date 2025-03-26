@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/Textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/Select';
 import { Button } from '@/components/ui/Button';
 import { DatePicker } from '@/components/ui/DatePicker';
+import { ImageUpload } from '@/components/ui/ImageUpload';
 
 export function VehicleForm() {
   const [formData, setFormData] = useState({
@@ -182,7 +183,7 @@ export function VehicleForm() {
                   <label htmlFor="validUntil">Gültig bis</label>
                   <DatePicker
                     date={formData.validUntil}
-                    onChange={(date) => setFormData({ ...formData, validUntil: date || new Date() })}
+                    onChange={(date: Date | undefined) => setFormData({ ...formData, validUntil: date || new Date() })}
                   />
                 </div>
               </div>

@@ -1,8 +1,11 @@
 'use client'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
-import { useRouter } from 'next/navigation'
+
 import { useEffect } from 'react'
-import Sidebar from '@/components/admin/Sidebar'
+import { useRouter } from 'next/navigation'
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import AdminSidebar from '@/components/admin/AdminSidebar'
+import AdminTopbar from '@/components/admin/AdminTopbar'
+import { toast } from 'sonner'
 
 export default function AdminLayout({
   children,
@@ -14,21 +17,29 @@ export default function AdminLayout({
 
   useEffect(() => {
     const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      
-      if (!session) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession()
+        
+        if (!session) {
+          toast.error('Bitte melden Sie sich an')
+          router.push('/login')
+          return
+        }
+
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role, is_admin')
+          .eq('id', session.user.id)
+          .single()
+
+        if (!profile?.is_admin && profile?.role !== 'dealer') {
+          toast.error('Keine Berechtigung für den Admin-Bereich')
+          router.push('/')
+        }
+      } catch (error) {
+        console.error('Auth check error:', error)
+        toast.error('Fehler bei der Authentifizierung')
         router.push('/login')
-        return
-      }
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', session.user.id)
-        .single()
-
-      if (profile?.role !== 'dealer') {
-        router.push('/')
       }
     }
 
@@ -36,11 +47,16 @@ export default function AdminLayout({
   }, [router, supabase])
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      <Sidebar />
-      <main className="flex-1 ml-64 px-6 py-6">
-        {children}
-      </main>
+    <div className="min-h-screen bg-gray-100">
+      <AdminSidebar />
+      <div className="md:pl-64">
+        <AdminTopbar />
+        <main className="py-6">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-8">
+            {children}
+          </div>
+        </main>
+      </div>
     </div>
   )
 } 
