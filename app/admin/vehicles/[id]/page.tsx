@@ -1,0 +1,56 @@
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import VehicleForm from '@/components/admin/VehicleForm'
+import { notFound } from 'next/navigation'
+
+interface EditVehiclePageProps {
+  params: {
+    id: string
+  }
+}
+
+export default async function EditVehiclePage({ params }: EditVehiclePageProps) {
+  const supabase = createServerComponentClient({ cookies })
+  
+  const { data: { session } } = await supabase.auth.getSession()
+  
+  if (!session) {
+    redirect('/login')
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', session.user.id)
+    .single()
+
+  if (profile?.role !== 'dealer') {
+    redirect('/')
+  }
+
+  const { data: vehicle } = await supabase
+    .from('vehicles')
+    .select('*')
+    .eq('id', params.id)
+    .single()
+
+  if (!vehicle) {
+    notFound()
+  }
+
+  return (
+    <div>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900">Fahrzeug bearbeiten</h1>
+        <p className="text-gray-600">Bearbeiten Sie die Details des Fahrzeugs</p>
+      </div>
+
+      <div className="bg-white shadow rounded-xl overflow-hidden">
+        <div className="p-6">
+          <VehicleForm vehicle={vehicle} />
+        </div>
+      </div>
+    </div>
+  )
+} 
