@@ -23,7 +23,15 @@ export default function LoginPage() {
         password,
       })
 
-      if (signInError) throw signInError
+      if (signInError) {
+        console.error('Anmeldefehler:', signInError)
+        throw signInError
+      }
+
+      if (!data?.user) {
+        console.error('Keine Benutzerdaten erhalten')
+        throw new Error('Keine Benutzerdaten erhalten')
+      }
 
       // Überprüfe die Rolle des Benutzers
       const { data: profile, error: profileError } = await supabase
@@ -32,16 +40,29 @@ export default function LoginPage() {
         .eq('id', data.user.id)
         .single()
 
-      if (profileError) throw profileError
+      if (profileError) {
+        console.error('Profilfehler:', profileError)
+        throw profileError
+      }
+
+      if (!profile) {
+        console.error('Kein Profil gefunden')
+        throw new Error('Benutzerprofil nicht gefunden')
+      }
 
       // Leite basierend auf der Rolle weiter
-      if (profile?.role === 'dealer') {
+      if (profile.role === 'dealer') {
         router.push('/admin/dashboard')
       } else {
         router.push('/vehicles')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten')
+      console.error('Vollständiger Fehler:', err)
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError('Ein unerwarteter Fehler ist aufgetreten')
+      }
     } finally {
       setIsLoading(false)
     }
