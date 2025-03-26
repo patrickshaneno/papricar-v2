@@ -21,6 +21,16 @@ const VEHICLE_STATUSES = [
 ] as const
 
 export default function ManagementSection({ register, errors, control, isLoading, isDirty, onDuplicate, onMarkAsSold }: ManagementSectionProps) {
+  const handleDuplicate = (e: React.MouseEvent) => {
+    e.preventDefault()
+    onDuplicate()
+  }
+
+  const handleMarkAsSold = (e: React.MouseEvent) => {
+    e.preventDefault()
+    onMarkAsSold()
+  }
+
   return (
     <div className="space-y-6">
       <div>
@@ -41,7 +51,7 @@ export default function ManagementSection({ register, errors, control, isLoading
       <div className="flex space-x-4">
         <button
           type="button"
-          onClick={onDuplicate}
+          onClick={handleDuplicate}
           disabled={isLoading}
           className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
         >
@@ -49,7 +59,7 @@ export default function ManagementSection({ register, errors, control, isLoading
         </button>
         <button
           type="button"
-          onClick={onMarkAsSold}
+          onClick={handleMarkAsSold}
           disabled={isLoading}
           className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
         >
