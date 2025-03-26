@@ -67,7 +67,7 @@ export default function ChatPage() {
         },
         (payload: MessagePayload) => {
           if (payload.new) {
-            setMessages((prev) => [...prev, payload.new])
+            setMessages((prev) => [...prev, payload.new as Message])
           }
         }
       )
