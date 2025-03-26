@@ -12,14 +12,13 @@ export default function ImagesSection({ formData, onChange }: ImagesSectionProps
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (files) {
-      const imageUrls = Array.from(files).map(file => URL.createObjectURL(file))
-      onChange('images', [...(formData.images || []), ...imageUrls])
+      const newImages = Array.from(files).map(file => URL.createObjectURL(file))
+      onChange('images', [...formData.images, ...newImages])
     }
   }
 
   const handleRemoveImage = (index: number) => {
-    const newImages = [...(formData.images || [])]
-    newImages.splice(index, 1)
+    const newImages = formData.images.filter((_, i) => i !== index)
     onChange('images', newImages)
   }
 
@@ -27,7 +26,7 @@ export default function ImagesSection({ formData, onChange }: ImagesSectionProps
     <div className="space-y-6">
       <div>
         <label className="block text-sm font-medium text-gray-700">
-          Fahrzeugbilder
+          Bilder
         </label>
         <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
           <div className="space-y-1 text-center">
@@ -50,7 +49,7 @@ export default function ImagesSection({ formData, onChange }: ImagesSectionProps
                 htmlFor="file-upload"
                 className="relative cursor-pointer bg-white rounded-md font-medium text-purple-600 hover:text-purple-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-purple-500"
               >
-                <span>Bilder hochladen</span>
+                <span>Dateien hochladen</span>
                 <input
                   id="file-upload"
                   name="file-upload"
@@ -70,10 +69,10 @@ export default function ImagesSection({ formData, onChange }: ImagesSectionProps
         </div>
       </div>
 
-      {formData.images && formData.images.length > 0 && (
+      {formData.images.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {formData.images.map((image, index) => (
-            <div key={index} className="relative">
+            <div key={index} className="relative group">
               <img
                 src={image}
                 alt={`Fahrzeugbild ${index + 1}`}
@@ -82,13 +81,13 @@ export default function ImagesSection({ formData, onChange }: ImagesSectionProps
               <button
                 type="button"
                 onClick={() => handleRemoveImage(index)}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
               >
                 <svg
                   className="h-4 w-4"
                   fill="none"
-                  viewBox="0 0 24 24"
                   stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
                   <path
                     strokeLinecap="round"

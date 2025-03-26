@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { VehicleFormData } from '@/types/vehicle';
+import { VehicleFormData, Transmission, FuelType } from '@/types/vehicle';
 
 interface VehicleDetailsSectionProps {
   formData: VehicleFormData;
@@ -70,7 +70,7 @@ export default function VehicleDetailsSection({ formData, onChange }: VehicleDet
         <select
           id="transmission"
           value={formData.transmission}
-          onChange={(e) => onChange('transmission', e.target.value)}
+          onChange={(e) => onChange('transmission', e.target.value as Transmission)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         >
           <option value="manual">Manuell</option>
@@ -84,14 +84,15 @@ export default function VehicleDetailsSection({ formData, onChange }: VehicleDet
         </label>
         <select
           id="fuelType"
-          value={formData.fuelType}
-          onChange={(e) => onChange('fuelType', e.target.value)}
+          value={formData.fuel_type}
+          onChange={(e) => onChange('fuel_type', e.target.value as FuelType)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         >
           <option value="petrol">Benzin</option>
           <option value="diesel">Diesel</option>
           <option value="electric">Elektrisch</option>
-          <option value="hybrid">Hybrid</option>
+          <option value="hybrid_petrol">Hybrid (Benzin)</option>
+          <option value="hybrid_diesel">Hybrid (Diesel)</option>
         </select>
       </div>
     </div>

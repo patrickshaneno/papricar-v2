@@ -12,15 +12,14 @@ export default function ConsumptionSection({ formData, onChange }: ConsumptionSe
   return (
     <div className="space-y-6">
       <div>
-        <label htmlFor="consumption" className="block text-sm font-medium text-gray-700">
-          Verbrauch (l/100km)
+        <label htmlFor="fuelConsumption" className="block text-sm font-medium text-gray-700">
+          Kraftstoffverbrauch (l/100km)
         </label>
         <input
           type="number"
-          id="consumption"
-          value={formData.consumption}
-          onChange={(e) => onChange('consumption', parseFloat(e.target.value))}
-          step="0.1"
+          id="fuelConsumption"
+          value={formData.fuel_consumption}
+          onChange={(e) => onChange('fuel_consumption', parseFloat(e.target.value))}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
         />
       </div>
@@ -39,29 +38,22 @@ export default function ConsumptionSection({ formData, onChange }: ConsumptionSe
       </div>
 
       <div>
-        <label htmlFor="power" className="block text-sm font-medium text-gray-700">
-          Leistung (PS)
+        <label htmlFor="emissionClass" className="block text-sm font-medium text-gray-700">
+          Schadstoffklasse
         </label>
-        <input
-          type="number"
-          id="power"
-          value={formData.power}
-          onChange={(e) => onChange('power', parseInt(e.target.value))}
+        <select
+          id="emissionClass"
+          value={formData.emission_class}
+          onChange={(e) => onChange('emission_class', e.target.value)}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
-        />
-      </div>
-
-      <div>
-        <label htmlFor="displacement" className="block text-sm font-medium text-gray-700">
-          Hubraum (cm³)
-        </label>
-        <input
-          type="number"
-          id="displacement"
-          value={formData.displacement}
-          onChange={(e) => onChange('displacement', parseInt(e.target.value))}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm"
-        />
+        >
+          <option value="euro6">Euro 6</option>
+          <option value="euro5">Euro 5</option>
+          <option value="euro4">Euro 4</option>
+          <option value="euro3">Euro 3</option>
+          <option value="euro2">Euro 2</option>
+          <option value="euro1">Euro 1</option>
+        </select>
       </div>
     </div>
   );
