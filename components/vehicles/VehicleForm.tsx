@@ -6,11 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Tab } from '@headlessui/react'
 import { VehicleFormData } from '@/types/vehicle'
-import VehicleDetailsSection from '@/components/vehicles/form-sections/VehicleDetailsSection'
-import ConsumptionSection from '@/components/vehicles/form-sections/ConsumptionSection'
-import PricingSection from '@/components/vehicles/form-sections/PricingSection'
-import ImagesSection from '@/components/vehicles/form-sections/ImagesSection'
-import ManagementSection from '@/components/vehicles/form-sections/ManagementSection'
+import VehicleDetailsSection from './form-sections/VehicleDetailsSection'
+import ConsumptionSection from './form-sections/ConsumptionSection'
+import PricingSection from './form-sections/PricingSection'
+import ImagesSection from './form-sections/ImagesSection'
+import ManagementSection from './form-sections/ManagementSection'
 
 interface VehicleFormProps {
   initialData?: VehicleFormData
@@ -71,7 +71,7 @@ export default function VehicleForm({ initialData, onSubmit, isLoading }: Vehicl
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isDirty: formIsDirty },
     watch,
     setValue,
     control
@@ -168,7 +168,7 @@ export default function VehicleForm({ initialData, onSubmit, isLoading }: Vehicl
               register={register}
               errors={errors}
               control={control}
-              isDirty={isDirty}
+              isDirty={formIsDirty}
               isLoading={isLoading}
               onDuplicate={() => {}}
               onMarkAsSold={() => {}}
