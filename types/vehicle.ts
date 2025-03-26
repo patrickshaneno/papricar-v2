@@ -54,35 +54,9 @@ export interface Vehicle {
   dealer_id: string
 }
 
-export interface VehicleFormData extends Omit<Vehicle, 'id' | 'created_at' | 'updated_at' | 'dealer_id' | 'registration_date'> {
-  id?: string
-  type: VehicleType
-  brand: string
-  model: string
-  title: string
-  vin: string
-  year: number
-  registration_date: string
-  mileage: number
-  delivery_month: number
-  delivery_year: number
-  exterior_color: string
-  exterior_color_text: string
-  interior_color: string
-  interior_color_text: string
-  transmission: Transmission
-  fuel_type: FuelType
-  power: number
-  displacement: number
-  consumption_combined: number
-  consumption_city: number
-  consumption_highway: number
-  co2_emissions: number
-  price: number
-  description: string
-  features: string[]
-  images: string[]
-  preview_image: string
-  status: VehicleStatus
-  isDirty?: boolean
+export interface VehicleFormData extends Omit<Vehicle, 'id' | 'created_at' | 'updated_at' | 'status'> {
+  vat: number;
+  negotiable: boolean;
+  fuel_consumption: number;
+  emission_class: string;
 } 
