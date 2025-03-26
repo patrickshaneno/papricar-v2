@@ -73,7 +73,7 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen bg-gray-50">
         <Navbar />
-        <Container>
+        <Container className="pt-24">
           {children}
         </Container>
       </body>
