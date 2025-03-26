@@ -38,16 +38,31 @@ export default function LoginPage() {
         .from('profiles')
         .select('role')
         .eq('id', data.user.id)
-        .single()
+        .maybeSingle()
 
       if (profileError) {
         console.error('Profilfehler:', profileError)
         throw profileError
       }
 
+      // Wenn kein Profil existiert, erstelle eines
       if (!profile) {
-        console.error('Kein Profil gefunden')
-        throw new Error('Benutzerprofil nicht gefunden')
+        const { error: insertError } = await supabase
+          .from('profiles')
+          .insert([
+            {
+              id: data.user.id,
+              role: 'user'
+            }
+          ])
+
+        if (insertError) {
+          console.error('Fehler beim Erstellen des Profils:', insertError)
+          throw insertError
+        }
+
+        router.push('/vehicles')
+        return
       }
 
       // Leite basierend auf der Rolle weiter
