@@ -26,7 +26,7 @@ const schema = z.object({
   title: z.string().min(1, 'Titel ist erforderlich'),
   vin: z.string().optional(),
   year: z.number().min(1900).max(new Date().getFullYear() + 1),
-  registration_date: z.date().optional(),
+  registration_date: z.string().optional(),
   mileage: z.number().min(0),
   delivery_month: z.number().min(1).max(12),
   delivery_year: z.number().min(new Date().getFullYear()),
@@ -41,27 +41,21 @@ const schema = z.object({
   power_kw: z.number().min(1),
 
   // Section 2: Consumption
-  fuel_consumption_combined: z.number().optional(),
-  electric_consumption_combined: z.number().optional(),
-  fuel_consumption_battery_empty: z.number().optional(),
-  electric_consumption_battery_empty: z.number().optional(),
+  fuel_consumption: z.number(),
   co2_emissions: z.number(),
-  co2_class: z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G']),
-  co2_class_battery_empty: z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G']).optional(),
+  emission_class: z.string(),
 
   // Section 3: Pricing
   price: z.number().min(0),
-  leasing_rate: z.number().optional(),
-  cash_discount: z.number().min(0).max(100).optional(),
-  financing_discount: z.number().min(0).max(100).optional(),
-  leasing_discount: z.number().min(0).max(100).optional(),
+  vat: z.number(),
+  negotiable: z.boolean(),
 
   // Section 4: Images
   images: z.array(z.string()),
   preview_image: z.string().optional(),
 
   // Section 5: Management
-  status: z.enum(['draft', 'active', 'sold'])
+  dealer_id: z.string()
 })
 
 export default function VehicleForm({ initialData, onSubmit, isLoading }: VehicleFormProps) {
