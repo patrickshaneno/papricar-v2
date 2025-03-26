@@ -8,6 +8,46 @@
   }
   
   body {
-    @apply bg-white text-gray-900 min-h-screen font-sans;
+    @apply bg-gray-50 text-gray-900 min-h-screen font-sans;
   }
-} 
+
+  h1 {
+    @apply text-3xl font-bold text-gray-900 sm:text-4xl;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold text-gray-800 sm:text-3xl;
+  }
+
+  h3 {
+    @apply text-xl font-semibold text-gray-800 sm:text-2xl;
+  }
+
+  p {
+    @apply text-gray-600 leading-relaxed;
+  }
+}
+
+@layer components {
+  .container-custom {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  .card {
+    @apply bg-white rounded-2xl shadow-lg p-6;
+  }
+
+  .btn-primary {
+    @apply bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200;
+  }
+
+  .btn-secondary {
+    @apply bg-gray-800 text-white px-6 py-2 rounded-xl hover:bg-gray-900 transition-colors duration-200;
+  }
+
+  .input-field {
+    @apply w-full px-4 py-2 rounded-xl border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200;
+  }
+}
+
+// 💄 UI updated 

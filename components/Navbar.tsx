@@ -19,20 +19,20 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/90 backdrop-blur-md shadow-sm">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="fixed top-0 left-0 right-0 z-[100] bg-white/95 backdrop-blur-md shadow-md">
+      <div className="container-custom">
         <div className="flex justify-between h-16 items-center">
           {/* Logo */}
           <Link href="/" className="flex-shrink-0 flex items-center">
-            <span className="text-2xl font-bold text-gray-900">PAPRICAR</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">PAPRICAR</span>
           </Link>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            <Link href="/vehicles" className="text-gray-700 hover:text-gray-900">
+            <Link href="/vehicles" className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium">
               Marktplatz
             </Link>
-            <Link href="/faq" className="text-gray-700 hover:text-gray-900">
+            <Link href="/faq" className="text-gray-700 hover:text-blue-600 transition-colors duration-200 font-medium">
               FAQ
             </Link>
           </div>
@@ -41,13 +41,13 @@ export default function Navbar() {
           <div className="hidden md:flex items-center space-x-4">
             <Link
               href="/login"
-              className="text-gray-700 hover:text-gray-900 px-3 py-2 rounded-md"
+              className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl font-medium transition-colors duration-200"
             >
               Login
             </Link>
             <Link
               href="/dealer"
-              className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90"
+              className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md"
             >
               Für Händler
             </Link>
@@ -57,7 +57,8 @@ export default function Navbar() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-700 hover:text-gray-900"
+              className="text-gray-700 hover:text-blue-600 p-2 rounded-lg transition-colors duration-200"
+              aria-label="Toggle menu"
             >
               <svg
                 className="h-6 w-6"
@@ -87,29 +88,29 @@ export default function Navbar() {
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden py-4 bg-white">
+          <div className="md:hidden py-4 bg-white border-t border-gray-100">
             <div className="flex flex-col space-y-4">
               <Link
                 href="/vehicles"
-                className="text-gray-700 hover:text-gray-900 px-3 py-2"
+                className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl transition-colors duration-200 font-medium"
               >
                 Marktplatz
               </Link>
               <Link
                 href="/faq"
-                className="text-gray-700 hover:text-gray-900 px-3 py-2"
+                className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl transition-colors duration-200 font-medium"
               >
                 FAQ
               </Link>
               <Link
                 href="/login"
-                className="text-gray-700 hover:text-gray-900 px-3 py-2"
+                className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl transition-colors duration-200 font-medium"
               >
                 Login
               </Link>
               <Link
                 href="/dealer"
-                className="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90"
+                className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md text-center"
               >
                 Für Händler
               </Link>

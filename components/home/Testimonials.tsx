@@ -29,13 +29,15 @@ const testimonials = [
 
 export default function Testimonials() {
   return (
-    <div className="bg-white py-24 sm:py-32">
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+    <div className="bg-gradient-to-b from-gray-50 to-white py-24 sm:py-32">
+      <div className="container-custom">
         <div className="mx-auto max-w-2xl lg:text-center">
-          <h2 className="text-base font-semibold leading-7 text-purple-600">Testimonials</h2>
-          <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+          <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+            Testimonials
+          </span>
+          <h2 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
             Das sagen unsere Kunden
-          </p>
+          </h2>
           <p className="mt-6 text-lg leading-8 text-gray-600">
             Erfahren Sie, wie PAPRICAR Händlern hilft, ihre Fahrzeuge erfolgreicher zu vermarkten.
           </p>
@@ -44,13 +46,13 @@ export default function Testimonials() {
           <div className="-mt-8 sm:-mx-4 sm:columns-2 sm:text-[0] lg:columns-3">
             {testimonials.map((testimonial) => (
               <div key={testimonial.author.handle} className="pt-8 sm:inline-block sm:w-full sm:px-4">
-                <figure className="rounded-2xl bg-gray-50 p-8 text-sm leading-6">
+                <figure className="card">
                   <blockquote className="text-gray-900">
-                    <p>{`"${testimonial.body}"`}</p>
+                    <p className="text-lg leading-relaxed">{`"${testimonial.body}"`}</p>
                   </blockquote>
                   <figcaption className="mt-6 flex items-center gap-x-4">
-                    <div>
-                      <div className="font-semibold text-gray-900">{testimonial.author.name}</div>
+                    <div className="flex flex-col">
+                      <div className="font-semibold text-gray-900 text-lg">{testimonial.author.name}</div>
                       <div className="text-gray-600">{`${testimonial.author.role}, ${testimonial.author.handle}`}</div>
                     </div>
                   </figcaption>

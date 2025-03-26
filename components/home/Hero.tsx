@@ -5,15 +5,13 @@ import Image from 'next/image'
 
 export default function Hero() {
   return (
-    <div className="relative isolate overflow-hidden bg-white">
-      <div className="mx-auto max-w-7xl px-6 pb-24 pt-10 sm:pb-32 lg:flex lg:px-8 lg:py-40">
+    <div className="relative isolate overflow-hidden bg-gradient-to-b from-blue-50 to-white">
+      <div className="container-custom py-16 sm:py-24 lg:flex lg:items-center lg:py-32">
         <div className="mx-auto max-w-2xl flex-shrink-0 lg:mx-0 lg:max-w-xl lg:pt-8">
           <div className="mt-24 sm:mt-32 lg:mt-16">
-            <a href="#" className="inline-flex space-x-6">
-              <span className="rounded-full bg-purple-600/10 px-3 py-1 text-sm font-semibold leading-6 text-purple-600 ring-1 ring-inset ring-purple-600/10">
-                Neu bei PAPRICAR
-              </span>
-            </a>
+            <span className="inline-flex items-center rounded-full bg-blue-100 px-4 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+              Neu bei PAPRICAR
+            </span>
           </div>
           <h1 className="mt-10 text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
             Die moderne Plattform für den Fahrzeughandel
@@ -24,12 +22,15 @@ export default function Hero() {
           <div className="mt-10 flex items-center gap-x-6">
             <Link
               href="/register"
-              className="rounded-md bg-purple-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-purple-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-purple-600"
+              className="btn-primary"
             >
               Jetzt registrieren
             </Link>
-            <Link href="/vehicles" className="text-sm font-semibold leading-6 text-gray-900">
-              Fahrzeuge ansehen <span aria-hidden="true">→</span>
+            <Link 
+              href="/vehicles" 
+              className="text-sm font-semibold leading-6 text-gray-900 hover:text-blue-600 transition-colors duration-200"
+            >
+              Fahrzeuge ansehen <span aria-hidden="true" className="ml-1">→</span>
             </Link>
           </div>
         </div>
@@ -40,7 +41,8 @@ export default function Hero() {
               alt="Modernes Auto auf der PAPRICAR Plattform"
               width={1000}
               height={600}
-              className="w-[76rem] rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-400/10"
+              className="w-[76rem] rounded-2xl bg-white shadow-2xl ring-1 ring-gray-400/10"
+              priority
             />
           </div>
         </div>

@@ -70,9 +70,13 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="PAPRICAR" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
-      <body className="pt-16">
-        <Navbar />
-        {children}
+      <body className="min-h-screen bg-gray-50">
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow container-custom py-8">
+            {children}
+          </main>
+        </div>
       </body>
     </html>
   )
