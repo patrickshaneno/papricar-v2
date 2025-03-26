@@ -4,14 +4,47 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useState, useEffect } from 'react'
 import Container from '@/components/ui/Container'
+import { supabase } from '@/lib/supabase'
+import ProfileMenu from './ProfileMenu'
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [user, setUser] = useState<any>(null)
   const pathname = usePathname()
 
   useEffect(() => {
     setMounted(true)
+    const getUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single()
+        setUser({ ...user, role: profile?.role })
+      }
+    }
+    getUser()
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        const getUser = async () => {
+          const { data: profile } = await supabase
+            .from('profiles')
+            .select('role')
+            .eq('id', session.user.id)
+            .single()
+          setUser({ ...session.user, role: profile?.role })
+        }
+        getUser()
+      } else {
+        setUser(null)
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   // Ausblenden auf Login-Seiten
@@ -40,18 +73,24 @@ export default function Navbar() {
 
           {/* Desktop Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <Link
-              href="/login"
-              className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl font-medium transition-colors duration-200"
-            >
-              Login
-            </Link>
-            <Link
-              href="/dealer"
-              className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md"
-            >
-              Für Händler
-            </Link>
+            {user ? (
+              <ProfileMenu user={user} />
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl font-medium transition-colors duration-200"
+                >
+                  Login
+                </Link>
+                <Link
+                  href="/dealer"
+                  className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md"
+                >
+                  Für Händler
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -103,18 +142,40 @@ export default function Navbar() {
               >
                 FAQ
               </Link>
-              <Link
-                href="/login"
-                className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl transition-colors duration-200 font-medium"
-              >
-                Login
-              </Link>
-              <Link
-                href="/dealer"
-                className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md text-center"
-              >
-                Für Händler
-              </Link>
+              {user ? (
+                <>
+                  <Link
+                    href="/admin/dashboard"
+                    className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl transition-colors duration-200 font-medium"
+                  >
+                    Admin Dashboard
+                  </Link>
+                  <button
+                    onClick={async () => {
+                      await supabase.auth.signOut()
+                      window.location.href = '/login'
+                    }}
+                    className="text-red-600 hover:text-red-700 px-4 py-2 rounded-xl transition-colors duration-200 font-medium text-left"
+                  >
+                    Abmelden
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="text-gray-700 hover:text-blue-600 px-4 py-2 rounded-xl transition-colors duration-200 font-medium"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/dealer"
+                    className="bg-blue-600 text-white px-6 py-2 rounded-xl hover:bg-blue-700 transition-colors duration-200 font-medium shadow-md text-center"
+                  >
+                    Für Händler
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

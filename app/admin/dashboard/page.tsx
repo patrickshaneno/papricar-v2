@@ -8,6 +8,8 @@ import UsersTable from '@/app/components/admin/UsersTable'
 import DealersTable from '@/app/components/admin/DealersTable'
 import VehiclesTable from '@/app/components/admin/VehiclesTable'
 import LeadsTable from '@/app/components/admin/LeadsTable'
+import Container from '@/components/ui/Container'
+import { supabase } from '@/lib/supabase'
 
 interface KPI {
   label: string
@@ -72,29 +74,32 @@ export default function AdminDashboard() {
   const [leads, setLeads] = useState<Lead[]>([])
 
   useEffect(() => {
-    checkAdminAccess()
+    const checkAccess = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      
+      if (!session) {
+        router.push('/login')
+        return
+      }
+
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', session.user.id)
+        .single()
+
+      if (profile?.role !== 'dealer') {
+        router.push('/')
+        return
+      }
+    }
+
+    checkAccess()
+  }, [router])
+
+  useEffect(() => {
     fetchDashboardData()
   }, [])
-
-  const checkAdminAccess = async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    
-    if (!session) {
-      router.push('/')
-      return
-    }
-
-    const { data: user } = await supabase
-      .from('users')
-      .select('role')
-      .eq('id', session.user.id)
-      .single()
-
-    if (user?.role !== 'admin') {
-      router.push('/')
-      return
-    }
-  }
 
   const fetchDashboardData = async () => {
     try {
@@ -206,83 +211,19 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <Container>
+      <div className="pt-24 pb-12">
         <h1 className="text-3xl font-bold text-gray-900 mb-8">Admin Dashboard</h1>
-
-        {/* Navigation */}
-        <div className="bg-white shadow-sm rounded-lg mb-8">
-          <nav className="flex space-x-8 px-6" aria-label="Tabs">
-            {['dashboard', 'users', 'dealers', 'vehicles', 'leads'].map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === tab
-                    ? 'border-purple-500 text-purple-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-              >
-                {tab === 'dashboard' ? 'Dashboard' :
-                 tab === 'users' ? 'Benutzer' :
-                 tab === 'dealers' ? 'Händler' :
-                 tab === 'vehicles' ? 'Fahrzeuge' : 'Leads'}
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        {/* Content */}
-        <div className="space-y-8">
-          {activeTab === 'dashboard' && (
-            <>
-              {/* KPI Cards */}
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {kpis.map((kpi) => (
-                  <div
-                    key={kpi.label}
-                    className="bg-white overflow-hidden shadow rounded-lg"
-                  >
-                    <div className="p-5">
-                      <div className="flex items-center">
-                        <div className={`flex-shrink-0 rounded-md p-3 ${kpi.color}`}>
-                          <kpi.icon className="h-6 w-6 text-white" aria-hidden="true" />
-                        </div>
-                        <div className="ml-5 w-0 flex-1">
-                          <dl>
-                            <dt className="text-sm font-medium text-gray-500 truncate">
-                              {kpi.label}
-                            </dt>
-                            <dd className="text-lg font-semibold text-gray-900">
-                              {kpi.value}
-                            </dd>
-                          </dl>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </>
-          )}
-
-          {activeTab === 'users' && (
-            <UsersTable users={users} onUpdate={fetchDashboardData} />
-          )}
-
-          {activeTab === 'dealers' && (
-            <DealersTable dealers={dealers} />
-          )}
-
-          {activeTab === 'vehicles' && (
-            <VehiclesTable vehicles={vehicles} dealers={dealers} />
-          )}
-
-          {activeTab === 'leads' && (
-            <LeadsTable leads={leads} />
-          )}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Hier können weitere Dashboard-Widgets hinzugefügt werden */}
+          <div className="bg-white p-6 rounded-xl shadow-md">
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">Willkommen im Admin-Bereich</h2>
+            <p className="text-gray-600">
+              Hier finden Sie alle wichtigen Funktionen für die Verwaltung Ihrer Fahrzeuge und Anfragen.
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </Container>
   )
 } 
