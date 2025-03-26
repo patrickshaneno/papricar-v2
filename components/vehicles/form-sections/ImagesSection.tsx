@@ -26,7 +26,7 @@ export default function ImagesSection({ register, errors, control, setValue, wat
     }
   }, [objectUrls])
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files
     if (!files) return
 
@@ -45,13 +45,13 @@ export default function ImagesSection({ register, errors, control, setValue, wat
     const newUrls = validFiles.map(file => URL.createObjectURL(file))
     setObjectUrls(prev => [...prev, ...newUrls])
     setValue('images', [...images, ...newUrls])
-  }
+  }, [images, setValue])
 
-  const handleRemoveImage = (index: number) => {
+  const handleRemoveImage = React.useCallback((index: number) => {
     URL.revokeObjectURL(objectUrls[index])
     setObjectUrls(prev => prev.filter((_, i) => i !== index))
     setValue('images', images.filter((_, i) => i !== index))
-  }
+  }, [images, objectUrls, setValue])
 
   return (
     <div className="space-y-6">
