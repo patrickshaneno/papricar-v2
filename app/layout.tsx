@@ -70,7 +70,7 @@ export default function RootLayout({
         <meta name="apple-mobile-web-app-title" content="PAPRICAR" />
         <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
       </head>
-      <body>
+      <body className="pt-16">
         <Navbar />
         {children}
       </body>
