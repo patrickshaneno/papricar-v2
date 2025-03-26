@@ -6,11 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Tab } from '@headlessui/react'
 import { VehicleFormData } from '@/types/vehicle'
-import VehicleDetailsSection from './form-sections/VehicleDetailsSection'
-import ConsumptionSection from './form-sections/ConsumptionSection'
-import PricingSection from './form-sections/PricingSection'
-import ImagesSection from './form-sections/ImagesSection'
-import ManagementSection from './form-sections/ManagementSection'
+import VehicleDetailsSection from '@/components/vehicles/form-sections/VehicleDetailsSection'
+import ConsumptionSection from '@/components/vehicles/form-sections/ConsumptionSection'
+import PricingSection from '@/components/vehicles/form-sections/PricingSection'
+import ImagesSection from '@/components/vehicles/form-sections/ImagesSection'
+import ManagementSection from '@/components/vehicles/form-sections/ManagementSection'
 
 interface VehicleFormProps {
   initialData?: VehicleFormData
@@ -26,7 +26,7 @@ const schema = z.object({
   title: z.string().min(1, 'Titel ist erforderlich'),
   vin: z.string().optional(),
   year: z.number().min(1900).max(new Date().getFullYear() + 1),
-  registration_date: z.string().optional(),
+  registration_date: z.string().optional().transform((val) => val ? new Date(val) : undefined),
   mileage: z.number().min(0),
   delivery_month: z.number().min(1).max(12),
   delivery_year: z.number().min(new Date().getFullYear()),
@@ -44,11 +44,17 @@ const schema = z.object({
   fuel_consumption: z.number(),
   co2_emissions: z.number(),
   emission_class: z.string(),
+  co2_class: z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G']),
+  co2_class_battery_empty: z.enum(['A', 'B', 'C', 'D', 'E', 'F', 'G']).optional(),
 
   // Section 3: Pricing
   price: z.number().min(0),
   vat: z.number(),
   negotiable: z.boolean(),
+  leasing_rate: z.number().optional(),
+  cash_discount: z.number().optional(),
+  financing_discount: z.number().optional(),
+  leasing_discount: z.number().optional(),
 
   // Section 4: Images
   images: z.array(z.string()),
@@ -73,9 +79,15 @@ export default function VehicleForm({ initialData, onSubmit, isLoading }: Vehicl
     resolver: zodResolver(schema),
     defaultValues: initialData || {
       type: 'new',
-      status: 'draft',
       images: [],
-      mileage: 0
+      mileage: 0,
+      vat: 19,
+      negotiable: false,
+      fuel_consumption: 0,
+      co2_emissions: 0,
+      emission_class: 'euro6',
+      co2_class: 'A',
+      registration_date: undefined
     }
   })
 
